@@ -9,9 +9,11 @@ from .services.ai import generate_diagnostic
 
 app = FastAPI()
 
-# Configuração de templates e estáticos
-templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Configuração de templates e estáticos usando caminhos absolutos
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
+
+app.mount("/static", StaticFiles(directory=os.path.join(BASE_DIR, "static")), name="static")
 
 app.add_middleware(
     CORSMiddleware,
