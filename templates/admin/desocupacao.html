@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Desocupações — Painel 220{% endblock %}
+{% block page_title %}Gestão de Desocupações{% endblock %}
+
+{% block top_bar_actions %}
+<button class="btn-primary" onclick="openAddDesocModal()">
+    <i data-lucide="minus-circle"></i>
+    Registrar Saída
+</button>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <!-- Resumo de Perdas -->
+    <div class="stats-grid span-full">
+        <div class="stat-card">
+            <div class="stat-header">
+                <span class="stat-title">Perda em VGL</span>
+                <i data-lucide="trending-down" class="stat-icon text-danger"></i>
+            </div>
+            <div class="stat-value">R$ {{ "{:,.2f}".format(stats.desoc_valor) }}</div>
+            <div class="stat-footer text-danger">Valor total desocupado no mês</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <span class="stat-title">Qtd Desocupados</span>
+                <i data-lucide="log-out" class="stat-icon text-danger"></i>
+            </div>
+            <div class="stat-value">{{ stats.desocupados }}</div>
+            <div class="stat-footer">Imóveis que saíram da carteira</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <span class="stat-title">Taxa de Churn</span>
+                <i data-lucide="percent" class="stat-icon text-warning"></i>
+            </div>
+            <div class="stat-value">{{ stats.churn|round(2) }}%</div>
+            <div class="stat-footer">Relação saída / carteira total</div>
+        </div>
+    </div>
+
+    <!-- Tabela de Desocupações -->
+    <div class="chart-card span-full">
+        <div class="card-header">
+            <h3 class="card-title">Listagem de Desocupações</h3>
+        </div>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Cód. Imóvel</th>
+                        <th>Locatário</th>
+                        <th>Bairro</th>
+                        <th>Valor Aluguel</th>
+                        <th>Motivo</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in desocupacoes %}
+                    <tr>
+                        <td><strong>{{ d.codigo_imovel }}</strong></td>
+                        <td>{{ d.locatario }}</td>
+                        <td>{{ d.bairro_nome }}</td>
+                        <td>R$ {{ "{:,.2f}".format(d.valor_aluguel) }}</td>
+                        <td><span class="badge warning">{{ d.motivo }}</span></td>
+                        <td>{{ d.dia }}/{{ d.mes }}/{{ d.ano }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 40px; color: #64748b;">
+                            Nenhuma desocupação registrada para {{ mes }}.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

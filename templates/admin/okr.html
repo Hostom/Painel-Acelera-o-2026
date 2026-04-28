@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block title %}OKR 2026 — Painel 220{% endblock %}
+{% block page_title %}Acompanhamento de OKRs{% endblock %}
+
+{% block top_bar_actions %}
+<button class="btn-primary" onclick="openAddOKRModal()">
+    <i data-lucide="plus"></i>
+    Novo KR
+</button>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <!-- Resumo de Progresso do Mês -->
+    <div class="chart-card span-full">
+        <div class="card-header">
+            <h3 class="card-title">Progresso Mensal dos Objetivos</h3>
+        </div>
+        <div class="okr-summary-container">
+            {% for obj in objetivos %}
+            <div class="okr-obj-item">
+                <div class="okr-obj-header">
+                    <span class="okr-obj-title">{{ obj.objetivo }}</span>
+                    <span class="okr-obj-pct">{{ obj.progresso_medio|round(1) }}%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" style="width: {{ obj.progresso_medio }}%; background: {% if obj.progresso_medio < 50 %}#ef4444{% elif obj.progresso_medio < 80 %}#f59e0b{% else %}#10b981{% endif %};"></div>
+                </div>
+            </div>
+            {% else %}
+            <p style="text-align: center; color: #64748b; padding: 20px;">Nenhum objetivo cadastrado para este mês.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Tabela Detalhada de KRs -->
+    <div class="chart-card span-full">
+        <div class="card-header">
+            <h3 class="card-title">Key Results (KRs)</h3>
+        </div>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>KR (Key Result)</th>
+                        <th>Meta</th>
+                        <th>S1</th>
+                        <th>S2</th>
+                        <th>S3</th>
+                        <th>S4</th>
+                        <th>S5</th>
+                        <th>Total</th>
+                        <th>Progresso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for kr in krs %}
+                    <tr>
+                        <td>
+                            <div class="kr-info">
+                                <span class="kr-name">{{ kr.key_result }}</span>
+                                <span class="kr-meta-sub">{{ kr.objetivo }}</span>
+                            </div>
+                        </td>
+                        <td><strong>{{ kr.meta }}</strong></td>
+                        <td>{{ kr.semana_1 }}</td>
+                        <td>{{ kr.semana_2 }}</td>
+                        <td>{{ kr.semana_3 }}</td>
+                        <td>{{ kr.semana_4 }}</td>
+                        <td>{{ kr.semana_5 }}</td>
+                        <td><strong>{{ kr.alcançado }}</strong></td>
+                        <td>
+                            <div class="progress-pill">
+                                <div class="progress-pill-bar" style="width: {{ kr.progresso }}%;"></div>
+                                <span class="progress-pill-text">{{ kr.progresso|round(1) }}%</span>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+.okr-summary-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    padding: 10px 0;
+}
+.okr-obj-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.okr-obj-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+}
+.progress-bar-container {
+    height: 10px;
+    background: #e2e8f0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.progress-bar-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.kr-info {
+    display: flex;
+    flex-direction: column;
+}
+.kr-name {
+    font-weight: 600;
+    color: var(--primary);
+}
+.kr-meta-sub {
+    font-size: 11px;
+    color: #64748b;
+}
+
+.progress-pill {
+    position: relative;
+    width: 100px;
+    height: 20px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.progress-pill-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: var(--accent);
+    opacity: 0.3;
+}
+.progress-pill-text {
+    font-size: 10px;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+}
+</style>
+{% endblock %}

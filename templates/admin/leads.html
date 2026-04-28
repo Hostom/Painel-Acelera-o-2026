@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block title %}Gestão de Leads — Painel 220{% endblock %}
+{% block page_title %}Gestão de Leads{% endblock %}
+
+{% block top_bar_actions %}
+<button class="btn-primary" onclick="openAddLeadModal()">
+    <i data-lucide="plus"></i>
+    Novo Lead
+</button>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <!-- Funil de Leads Quick View -->
+    <div class="chart-card span-full">
+        <div class="card-header">
+            <h3 class="card-title">Status do Funil (Mês Atual)</h3>
+        </div>
+        <div class="funil-status-container">
+            <div class="funil-step">
+                <span class="step-label">Leads</span>
+                <span class="step-value">{{ funil.leads }}</span>
+            </div>
+            <div class="funil-arrow"><i data-lucide="chevron-right"></i></div>
+            <div class="funil-step">
+                <span class="step-label">Interações</span>
+                <span class="step-value">{{ funil.interacoes }}</span>
+            </div>
+            <div class="funil-arrow"><i data-lucide="chevron-right"></i></div>
+            <div class="funil-step">
+                <span class="step-label">Visitas</span>
+                <span class="step-value">{{ funil.visitas }}</span>
+            </div>
+            <div class="funil-arrow"><i data-lucide="chevron-right"></i></div>
+            <div class="funil-step">
+                <span class="step-label">Condições</span>
+                <span class="step-value">{{ funil.condicoes }}</span>
+            </div>
+            <div class="funil-arrow"><i data-lucide="chevron-right"></i></div>
+            <div class="funil-step highlight">
+                <span class="step-label">Alugados</span>
+                <span class="step-value">{{ funil.alugados }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabela de Leads -->
+    <div class="chart-card span-full">
+        <div class="card-header">
+            <h3 class="card-title">Lista de Leads Recentes</h3>
+            <div class="card-actions">
+                <input type="text" placeholder="Buscar lead..." class="search-input">
+            </div>
+        </div>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Telefone</th>
+                        <th>Mídia</th>
+                        <th>Bairro</th>
+                        <th>Última Fase</th>
+                        <th>Corretor</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lead in leads %}
+                    <tr>
+                        <td><strong>{{ lead.nome }}</strong></td>
+                        <td>{{ lead.telefone }}</td>
+                        <td><span class="badge">{{ lead.midia }}</span></td>
+                        <td>{{ lead.bairro_nome }}</td>
+                        <td>
+                            {% if lead.alugado_semana %}<span class="status-dot success"></span> Alugado
+                            {% elif lead.condicao_semana %}<span class="status-dot warning"></span> Condição
+                            {% elif lead.visita_semana %}<span class="status-dot info"></span> Visita
+                            {% elif lead.interacao_semana %}<span class="status-dot info"></span> Interação
+                            {% else %}<span class="status-dot"></span> Lead Novo
+                            {% endif %}
+                        </td>
+                        <td>{{ lead.corretor_nome }}</td>
+                        <td>
+                            <button class="btn-icon" title="Editar"><i data-lucide="edit-3"></i></button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: #64748b;">
+                            Nenhum lead encontrado para este período.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+.funil-status-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+}
+.funil-step {
+    flex: 1;
+    text-align: center;
+    padding: 15px;
+    background: var(--surface);
+    border-radius: var(--radius-md);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.funil-step.highlight {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent);
+}
+.funil-step .step-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+}
+.funil-step .step-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+}
+.funil-arrow {
+    padding: 0 10px;
+    color: #cbd5e1;
+}
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    margin-right: 5px;
+}
+.status-dot.success { background: #10b981; }
+.status-dot.warning { background: #f59e0b; }
+.status-dot.info { background: #3b82f6; }
+
+.search-input {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+}
+</style>
+{% endblock %}

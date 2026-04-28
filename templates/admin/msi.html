@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}MSI - Contratos — Painel 220{% endblock %}
+{% block page_title %}Matriz de Segmentação Imobiliária (Contratos){% endblock %}
+
+{% block top_bar_actions %}
+<button class="btn-primary" onclick="openAddContractModal()">
+    <i data-lucide="plus"></i>
+    Novo Contrato
+</button>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <!-- Resumo de Performance Financeira -->
+    <div class="stats-grid span-full">
+        <div class="stat-card">
+            <div class="stat-header">
+                <span class="stat-title">VGL Efetivado</span>
+                <i data-lucide="dollar-sign" class="stat-icon text-success"></i>
+            </div>
+            <div class="stat-value">R$ {{ "{:,.2f}".format(stats.vgl) }}</div>
+            <div class="stat-footer text-success">Total de aluguéis fechados</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <span class="stat-title">VGC (Taxa Adm)</span>
+                <i data-lucide="trending-up" class="stat-icon text-info"></i>
+            </div>
+            <div class="stat-value">R$ {{ "{:,.2f}".format(stats.vgc) }}</div>
+            <div class="stat-footer text-info">Receita estimada de adm</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <span class="stat-title">Ticket Médio</span>
+                <i data-lucide="bar-chart-2" class="stat-icon text-warning"></i>
+            </div>
+            <div class="stat-value">R$ {{ "{:,.2f}".format(stats.ticket_medio) }}</div>
+            <div class="stat-footer text-warning">Média por contrato</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <span class="stat-title">Total Alugados</span>
+                <i data-lucide="file-check" class="stat-icon text-primary"></i>
+            </div>
+            <div class="stat-value">{{ stats.alugados }}</div>
+            <div class="stat-footer text-primary">Contratos no mês</div>
+        </div>
+    </div>
+
+    <!-- Tabela de Contratos -->
+    <div class="chart-card span-full">
+        <div class="card-header">
+            <h3 class="card-title">Listagem de Contratos MSI</h3>
+        </div>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Cód. Imóvel</th>
+                        <th>Locatário</th>
+                        <th>Bairro</th>
+                        <th>Valor Aluguel</th>
+                        <th>% Taxa</th>
+                        <th>Taxa (R$)</th>
+                        <th>Corretor</th>
+                        <th>Garantia</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in contratos %}
+                    <tr>
+                        <td><strong>{{ c.codigo_imovel }}</strong></td>
+                        <td>{{ c.locatario }}</td>
+                        <td>{{ c.bairro_nome }}</td>
+                        <td>R$ {{ "{:,.2f}".format(c.valor_aluguel) }}</td>
+                        <td>{{ (c.taxa_adm_percent * 100)|round(1) }}%</td>
+                        <td class="text-info"><strong>R$ {{ "{:,.2f}".format(c.valor_aluguel * c.taxa_adm_percent) }}</strong></td>
+                        <td>{{ c.corretor_nome }}</td>
+                        <td><span class="badge">{{ c.garantia }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px; color: #64748b;">
+                            Nenhum contrato registrado para {{ mes }}.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

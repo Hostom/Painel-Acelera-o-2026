@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block title %}Captação — Painel 220{% endblock %}
+{% block page_title %}Gestão de Captação de Imóveis{% endblock %}
+
+{% block top_bar_actions %}
+<button class="btn-primary" onclick="openAddCaptModal()">
+    <i data-lucide="home"></i>
+    Nova Captação
+</button>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <!-- Stats de Captação -->
+    <div class="stats-grid span-full">
+        <div class="stat-card">
+            <div class="stat-header">
+                <span class="stat-title">Imóveis Captados</span>
+                <i data-lucide="check-circle" class="stat-icon text-success"></i>
+            </div>
+            <div class="stat-value">{{ stats.captados }}</div>
+            <div class="stat-footer text-success">Entraram na carteira este mês</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <span class="stat-title">Conversão</span>
+                <i data-lucide="target" class="stat-icon text-info"></i>
+            </div>
+            <div class="stat-value">{{ stats.conversao|round(1) }}%</div>
+            <div class="stat-footer text-info">De apontados para captados</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-header">
+                <span class="stat-title">Apontados</span>
+                <i data-lucide="map-pin" class="stat-icon text-warning"></i>
+            </div>
+            <div class="stat-value">{{ stats.total }}</div>
+            <div class="stat-footer text-warning">Imóveis em negociação / ativos</div>
+        </div>
+    </div>
+
+    <!-- Tabela de Captações -->
+    <div class="chart-card span-full">
+        <div class="card-header">
+            <h3 class="card-title">Listagem de Captações Recentes</h3>
+        </div>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Proprietário</th>
+                        <th>Bairro</th>
+                        <th>Valor Locação</th>
+                        <th>Status</th>
+                        <th>Captador</th>
+                        <th>Tipo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in captacoes %}
+                    <tr>
+                        <td><strong>{{ c.codigo_imovel }}</strong></td>
+                        <td>{{ c.proprietario }}</td>
+                        <td>{{ c.bairro_nome }}</td>
+                        <td>R$ {{ c.valor_locacao }}</td>
+                        <td>
+                            <span class="badge {% if c.status == 'Captado' %}success{% elif c.status == 'Não captado' %}danger{% else %}warning{% endif %}">
+                                {{ c.status }}
+                            </span>
+                        </td>
+                        <td>{{ c.captador_nome }}</td>
+                        <td><span class="badge">{{ c.tipo_captacao }}</span></td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: #64748b;">
+                            Nenhuma captação registrada para {{ mes }}.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

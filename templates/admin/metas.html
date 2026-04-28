@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Definição de Metas — Painel 220{% endblock %}
+{% block page_title %}Metas do Painel 220{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <!-- Formulário de Metas Mensais -->
+    <div class="chart-card span-full">
+        <div class="card-header">
+            <h3 class="card-title">Definir Metas para {{ mes }} / {{ ano }}</h3>
+        </div>
+        <form action="/admin/metas/save" method="POST" class="meta-form">
+            <input type="hidden" name="ano" value="{{ ano }}">
+            <input type="hidden" name="mes" value="{{ mes }}">
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Meta de Alugados (Quantidade)</label>
+                    <input type="number" name="meta_qtd_1" value="{{ meta.meta_qtd_1 }}" class="form-control" placeholder="Ex: 20">
+                    <small>Quantos contratos novos você quer fechar este mês?</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Meta VGL (Valor Bruto de Locação)</label>
+                    <div class="input-prefix">
+                        <span class="prefix">R$</span>
+                        <input type="number" step="0.01" name="meta_vgl_1" value="{{ meta.meta_vgl_1 }}" class="form-control" placeholder="Ex: 90000.00">
+                    </div>
+                    <small>Se deixar vazio, usaremos Meta Qtd × R$ 4.500</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Meta de Captação (Quantidade)</label>
+                    <input type="number" name="meta_capt_1" value="{{ meta.meta_capt_1 }}" class="form-control" placeholder="Ex: 30">
+                    <small>Quantos novos imóveis devem entrar na carteira?</small>
+                </div>
+            </div>
+            
+            <div class="form-footer">
+                <button type="submit" class="btn-primary">
+                    <i data-lucide="save"></i>
+                    Salvar Metas
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tabela de Referência Anual (Visualização) -->
+    <div class="chart-card span-full">
+        <div class="card-header">
+            <h3 class="card-title">Histórico de Metas (Ano {{ ano }})</h3>
+        </div>
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Mês</th>
+                        <th>Meta Qtd</th>
+                        <th>Meta VGL (Previsto)</th>
+                        <th>Meta Captação</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in metas_ano %}
+                    <tr class="{% if m.mes == mes %}highlight-row{% endif %}">
+                        <td>{{ m.mes }}</td>
+                        <td>{{ m.meta_qtd_1 }}</td>
+                        <td>R$ {{ "{:,.2f}".format(m.meta_vgl_1 or m.meta_qtd_1 * 4500) }}</td>
+                        <td>{{ m.meta_capt_1 }}</td>
+                        <td>
+                            {% if m.id %}
+                            <span class="badge success">Definida</span>
+                            {% else %}
+                            <span class="badge">Padrão</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+.meta-form {
+    padding: 20px 0;
+}
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 32px;
+    margin-bottom: 32px;
+}
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--primary);
+}
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.2s;
+}
+.form-control:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+.input-prefix {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+.input-prefix .prefix {
+    padding: 0 12px;
+    background: #f1f5f9;
+    color: #64748b;
+    font-weight: 600;
+    border-right: 1px solid var(--border);
+}
+.input-prefix .form-control {
+    border: none;
+}
+.form-group small {
+    display: block;
+    margin-top: 4px;
+    color: #64748b;
+    font-size: 12px;
+}
+.form-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+.highlight-row {
+    background: var(--accent-soft);
+}
+</style>
+{% endblock %}
