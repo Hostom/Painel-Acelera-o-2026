@@ -26,6 +26,9 @@ app.add_middleware(
 def home(request: Request, ano: int = 2026, mes: str = "Abril"):
     """Renderiza a página principal do dashboard."""
     try:
+        if not supabase:
+            return {"error": "Conexão com o Supabase não configurada. Verifique as Environment Variables na Vercel (SUPABASE_URL e SUPABASE_ANON_KEY)."}
+
         metrics = calculate_dashboard_metrics(ano, mes)
         
         # Preparar dados para o Plotly
