@@ -9,8 +9,15 @@ def calculate_dashboard_metrics(ano: int, mes: str):
     """
     Consolida todos os KPIs extraindo dados diretamente do Supabase.
     """
+    if not supabase:
+        raise Exception("Banco de dados não configurado.")
+
+    # Garantir tipos básicos para evitar erros de hash no client do Supabase
+    ano_val = int(ano)
+    mes_val = str(mes)
+
     # 1. Buscar Alugados (MSI)
-    res_msi = supabase.table("msi_alugados").select("*").eq("ano", ano).eq("mes", mes).execute()
+    res_msi = supabase.table("msi_alugados").select("*").eq("ano", ano_val).eq("mes", mes_val).execute()
     df_msi = pd.DataFrame(res_msi.data if res_msi else [])
     
     alugados_qtd = len(df_msi)
@@ -19,13 +26,13 @@ def calculate_dashboard_metrics(ano: int, mes: str):
     ticket_medio = vgl / alugados_qtd if alugados_qtd > 0 else 0
 
     # 2. Buscar Desocupações
-    res_desoc = supabase.table("desocupacoes").select("*").eq("ano", ano).eq("mes", mes).execute()
+    res_desoc = supabase.table("desocupacoes").select("*").eq("ano", ano_val).eq("mes", mes_val).execute()
     df_desoc = pd.DataFrame(res_desoc.data if res_desoc else [])
     desoc_qtd = len(df_desoc)
     desoc_valor = df_desoc["valor_aluguel"].sum() if not df_desoc.empty else 0
 
     # 3. Buscar Metas
-    res_metas = supabase.table("metas_mensais").select("*").eq("ano", ano).eq("mes", mes).maybe_single().execute()
+    res_metas = supabase.table("metas_mensais").select("*").eq("ano", ano_val).eq("mes", mes_val).maybe_single().execute()
     meta = (res_metas.data if res_metas else None) or {"meta_qtd_1": 0, "meta_vgl_1": 0, "meta_capt_1": 0}
     
     meta_qtd = meta.get("meta_qtd_1", 0)
@@ -59,7 +66,7 @@ def calculate_dashboard_metrics(ano: int, mes: str):
     churn = (desoc_qtd / total_carteira) * 100 if total_carteira > 0 else 0
 
     # 5. FDL (Funil)
-    res_leads = supabase.table("leads").select("*").eq("ano", ano).eq("mes", mes).execute()
+    res_leads = supabase.table("leads").select("*").eq("ano", ano_val).eq("mes", mes_val).execute()
     df_leads = pd.DataFrame(res_leads.data if res_leads else [])
     
     leads_fases = {
