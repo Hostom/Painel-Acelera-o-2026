@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} — Painel 220{% endblock %}
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="chart-card" style="text-align: center; padding: 100px 20px;">
+    <div style="font-size: 48px; color: var(--accent); margin-bottom: 20px;">
+        <i data-lucide="construction"></i>
+    </div>
+    <h2 style="font-family: var(--font-title); margin-bottom: 10px;">Página em Desenvolvimento</h2>
+    <p style="color: #64748b;">A funcionalidade de <strong>{{ title }}</strong> está sendo migrada da planilha para o sistema.</p>
+    <br>
+    <a href="/" class="btn-primary" style="display: inline-block; padding: 10px 20px; background: var(--accent); color: white; border-radius: 8px; text-decoration: none;">Voltar ao Dashboard</a>
+</div>
+{% endblock %}

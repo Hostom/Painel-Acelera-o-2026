@@ -87,6 +87,33 @@ def get_diagnostic(ano: int = 2026, mes: str = "Abril"):
         return {"diagnostic": diagnostic}
     except Exception as e:
         return {"error": str(e)}
+@app.get("/admin/leads")
+def admin_leads(request: Request):
+    return templates.TemplateResponse("admin/placeholder.html", {"request": request, "title": "Gestão de Leads"})
+
+@app.get("/admin/contratos")
+def admin_contratos(request: Request):
+    return templates.TemplateResponse("admin/placeholder.html", {"request": request, "title": "Gestão de Contratos"})
+
+@app.get("/admin/captacao")
+def admin_captacao(request: Request):
+    return templates.TemplateResponse("admin/placeholder.html", {"request": request, "title": "Gestão de Captação"})
+
+@app.get("/admin/desocupacao")
+def admin_desocupacao(request: Request):
+    return templates.TemplateResponse("admin/placeholder.html", {"request": request, "title": "Gestão de Desocupação"})
+
+@app.get("/admin/okr")
+def admin_okr(request: Request):
+    return templates.TemplateResponse("admin/placeholder.html", {"request": request, "title": "Acompanhamento de OKRs"})
+
+@app.get("/admin/metas")
+def admin_metas(request: Request):
+    return templates.TemplateResponse("admin/placeholder.html", {"request": request, "title": "Definição de Metas"})
+
+@app.get("/admin")
+def admin_settings(request: Request):
+    return templates.TemplateResponse("admin/placeholder.html", {"request": request, "title": "Configurações do Sistema"})
 
 # Export para a Vercel
 index = app
