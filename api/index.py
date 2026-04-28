@@ -68,7 +68,8 @@ def home(request: Request, ano: int = 2026, mes: str = "Abril"):
             "bairros_data": bairros_data
         })
     except Exception as e:
-        return {"error": str(e)}
+        import traceback
+        return {"error": str(e), "traceback": traceback.format_exc()}
 
 @app.get("/api/health")
 def health():
@@ -81,7 +82,8 @@ def get_dashboard(ano: int = 2026, mes: str = "Abril"):
         metrics = calculate_dashboard_metrics(ano, mes)
         return metrics
     except Exception as e:
-        return {"error": str(e)}
+        import traceback
+        return {"error": str(e), "traceback": traceback.format_exc()}
 
 @app.get("/api/ai-diagnostic")
 def get_diagnostic(ano: int = 2026, mes: str = "Abril"):
@@ -91,7 +93,8 @@ def get_diagnostic(ano: int = 2026, mes: str = "Abril"):
         diagnostic = generate_diagnostic(metrics)
         return {"diagnostic": diagnostic}
     except Exception as e:
-        return {"error": str(e)}
+        import traceback
+        return {"error": str(e), "traceback": traceback.format_exc()}
 @app.get("/admin/leads")
 def admin_leads(request: Request):
     return templates.TemplateResponse("admin/placeholder.html", {"request": request, "title": "Gestão de Leads"})
