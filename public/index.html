@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel 220 | Aceleração Imobiliária</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-title { font-family: 'Manrope', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
+        .dark-glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 transition-colors duration-300">
+    <div class="flex min-h-screen">
+        <!-- Sidebar Customizada -->
+        <aside class="w-64 bg-white border-r border-slate-200 flex flex-col fixed h-full z-50">
+            <div class="p-6 flex items-center gap-3">
+                <div class="bg-blue-600 p-2 rounded-xl text-white">
+                    <i data-lucide="building-2"></i>
+                </div>
+                <h1 class="font-title font-800 text-xl tracking-tight">Painel 220</h1>
+            </div>
+            
+            <nav class="flex-1 px-4 space-y-1">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 text-blue-600 bg-blue-50 rounded-xl font-medium transition-all group">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+                    <i data-lucide="users"></i>
+                    <span>Leads</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+                    <i data-lucide="file-text"></i>
+                    <span>Contratos</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl transition-all">
+                    <i data-lucide="target"></i>
+                    <span>OKRs</span>
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-slate-100">
+                <button onclick="toggleDarkMode()" class="w-full flex items-center justify-center gap-2 p-3 bg-slate-100 rounded-xl hover:bg-slate-200 transition-all">
+                    <i data-lucide="moon" class="w-5 h-5"></i>
+                    <span class="text-sm font-medium">Trocar Tema</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 ml-64 p-8">
+            <header class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-title font-800 text-slate-900">Dashboard de Performance</h2>
+                    <p class="text-slate-500">Mês de <span id="mes-label" class="font-semibold text-blue-600">Abril</span> / 2026</p>
+                </div>
+                <div class="flex gap-3">
+                    <select id="mes-select" onchange="refreshData()" class="bg-white border border-slate-200 px-4 py-2 rounded-xl shadow-sm outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="Janeiro">Janeiro</option>
+                        <option value="Fevereiro">Fevereiro</option>
+                        <option value="Março">Março</option>
+                        <option value="Abril" selected>Abril</option>
+                    </select>
+                    <button onclick="openModal('modal-lead')" class="bg-blue-600 text-white px-6 py-2 rounded-xl font-semibold shadow-lg hover:bg-blue-700 transition-all flex items-center gap-2">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                        Novo Lead
+                    </button>
+                </div>
+            </header>
+
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" id="kpi-container">
+                <!-- VGL -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="bg-blue-100 p-3 rounded-lg text-blue-600">
+                            <i data-lucide="dollar-sign"></i>
+                        </div>
+                        <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">VGL</span>
+                    </div>
+                    <h3 class="text-slate-500 text-sm font-medium">Locação Total</h3>
+                    <p class="text-2xl font-800 font-title" id="kpi-vgl">R$ 0,00</p>
+                </div>
+                <!-- Novos Contratos -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="bg-emerald-100 p-3 rounded-lg text-emerald-600">
+                            <i data-lucide="check-circle"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-slate-500 text-sm font-medium">Contratos Novos</h3>
+                    <p class="text-2xl font-800 font-title" id="kpi-alugados">0</p>
+                </div>
+                <!-- Churn -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="bg-rose-100 p-3 rounded-lg text-rose-600">
+                            <i data-lucide="trending-down"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-slate-500 text-sm font-medium">CHURN (Retenção)</h3>
+                    <p class="text-2xl font-800 font-title text-rose-600" id="kpi-churn">0,0%</p>
+                </div>
+                <!-- Saldo Taxa -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="bg-amber-100 p-3 rounded-lg text-amber-600">
+                            <i data-lucide="wallet"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-slate-500 text-sm font-medium">Receita Taxa Adm</h3>
+                    <p class="text-2xl font-800 font-title" id="kpi-vgc">R$ 0,00</p>
+                </div>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                    <h4 class="font-title font-700 text-lg mb-6 flex items-center gap-2">
+                        <i data-lucide="filter" class="w-5 h-5 text-blue-600"></i>
+                        Funil de Conversão (FDL)
+                    </h4>
+                    <div id="chart-fdl" class="w-full h-80"></div>
+                </div>
+                <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-center items-center">
+                    <h4 class="font-title font-700 text-lg mb-6 self-start flex items-center gap-2">
+                        <i data-lucide="gauge" class="w-5 h-5 text-blue-600"></i>
+                        Termômetro de Meta
+                    </h4>
+                    <div id="chart-gauge" class="w-full h-64"></div>
+                </div>
+            </div>
+
+            <!-- Insights IA -->
+            <div class="bg-slate-900 text-white p-8 rounded-3xl shadow-xl relative overflow-hidden group">
+                <div class="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
+                    <i data-lucide="sparkles" class="w-32 h-32"></i>
+                </div>
+                <div class="relative z-10">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-blue-500 p-2 rounded-lg">
+                            <i data-lucide="zap" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="font-title font-700 text-xl">Diagnóstico Aceleração 220</h3>
+                    </div>
+                    <p class="text-slate-300 mb-6 leading-relaxed" id="ai-insight">
+                        Carregando análise estratégica dos seus KPIs atuais...
+                    </p>
+                    <button class="bg-white text-slate-900 px-6 py-2 rounded-xl font-semibold text-sm hover:bg-blue-50 transition-all">
+                        Ver Plano de Ação Completo
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Painel de Aceleração Imobiliária 220 — Gestão de Performance">
+    <title>{% block title %}Painel 220{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+    <!-- Design Tokens CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/tokens.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+</head>
+<body>
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">
+                    <i data-lucide="building-2"></i>
+                </div>
+                <span class="brand-text">Painel 220</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/" class="nav-item {% if request.url.path == '/' %}active{% endif %}" id="nav-dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/admin/leads" class="nav-item" id="nav-leads">
+                    <i data-lucide="users"></i>
+                    <span>Leads</span>
+                </a>
+                <a href="/admin/contratos" class="nav-item" id="nav-contratos">
+                    <i data-lucide="file-text"></i>
+                    <span>Contratos</span>
+                </a>
+                <a href="/admin/captacao" class="nav-item" id="nav-captacao">
+                    <i data-lucide="home"></i>
+                    <span>Captação</span>
+                </a>
+                <a href="/admin/desocupacao" class="nav-item" id="nav-desocupacao">
+                    <i data-lucide="door-open"></i>
+                    <span>Desocupação</span>
+                </a>
+                <a href="/admin/okr" class="nav-item" id="nav-okr">
+                    <i data-lucide="target"></i>
+                    <span>OKRs</span>
+                </a>
+                <a href="/admin/metas" class="nav-item" id="nav-metas">
+                    <i data-lucide="trophy"></i>
+                    <span>Metas</span>
+                </a>
+                <div class="nav-divider"></div>
+                <a href="/admin" class="nav-item" id="nav-admin">
+                    <i data-lucide="settings"></i>
+                    <span>Configurações</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="theme-toggle" onclick="toggleTheme()" id="btn-theme">
+                    <i data-lucide="moon"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="top-bar-left">
+                    <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+                </div>
+                <div class="top-bar-right">
+                    {% block top_bar_actions %}{% endblock %}
+                </div>
+            </header>
+
+            <div class="content-area">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Theme toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme');
+            html.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+            localStorage.setItem('theme', html.getAttribute('data-theme'));
+        }
+
+        // Restore theme
+        const saved = localStorage.getItem('theme');
+        if (saved) document.documentElement.setAttribute('data-theme', saved);
+    </script>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

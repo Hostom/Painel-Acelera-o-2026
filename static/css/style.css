@@ -1,0 +1,64 @@
+/* static/css/style.css */
+.ai-box {
+    background: linear-gradient(135deg, var(--accent-soft), var(--surface));
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    margin-top: 1rem;
+    min-height: 100px;
+}
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-title);
+}
+
+.markdown-body ul, .markdown-body ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.markdown-body p {
+    margin-bottom: 1rem;
+}
+
+.filter-bar {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.select-filter {
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--primary);
+    font-family: var(--font-main);
+    cursor: pointer;
+}
+
+.kpi-mini-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.kpi-mini {
+    background: var(--surface);
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    border: 1px dashed var(--border);
+}
+
+.kpi-mini-label {
+    font-size: 0.75rem;
+    color: #64748b;
+    display: block;
+}
+
+.kpi-mini-value {
+    font-size: 1rem;
+    font-weight: 600;
+}
