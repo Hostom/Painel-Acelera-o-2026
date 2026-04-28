@@ -96,5 +96,20 @@ CREATE TABLE okrs (
     semana_5 DECIMAL(12,2) DEFAULT 0
 );
 
+-- 6. Captações
+CREATE TABLE captacoes (
+    id SERIAL PRIMARY KEY,
+    codigo_imovel TEXT,
+    proprietario TEXT,
+    valor_locacao DECIMAL(12,2),
+    status TEXT DEFAULT 'Em negociação', -- Captado / Não captado / Em negociação
+    tipo_captacao TEXT, -- Orgânica / Ativa
+    mes TEXT,
+    ano INTEGER,
+    bairro_id INTEGER REFERENCES bairros(id),
+    corretor_id INTEGER REFERENCES corretores(id),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Habilitar RLS (Row Level Security) se necessário
 -- ALTER TABLE msi_alugados ENABLE ROW LEVEL SECURITY;

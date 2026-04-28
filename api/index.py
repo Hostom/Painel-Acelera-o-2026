@@ -185,8 +185,12 @@ def admin_captacao(request: Request, ano: int = 2026, mes: str = "Abril"):
     """Gerenciamento de Captações."""
     try:
         # 1. Buscar Captações com Joins
-        res = supabase.table("captacoes").select("*, bairros(nome), corretores(nome)").eq("ano", ano).eq("mes", mes).order("dia", desc=True).execute()
-        capt_raw = res.data if res else []
+        try:
+            res = supabase.table("captacoes").select("*, bairros(nome), corretores(nome)").eq("ano", ano).eq("mes", mes).order("id", desc=True).execute()
+            capt_raw = res.data if res else []
+        except Exception as table_err:
+            print(f"Erro ao acessar tabela captacoes: {table_err}")
+            capt_raw = []
         
         captacoes = []
         captados_count = 0
@@ -228,16 +232,17 @@ def admin_desocupacao(request: Request, ano: int = 2026, mes: str = "Abril"):
         # 1. Buscar Métricas para os cards (Churn, etc)
         metrics = calculate_dashboard_metrics(ano, mes)
         
-        # 2. Buscar Desocupações com Joins
-        res = supabase.table("desocupacoes").select("*, bairros(nome)").eq("ano", ano).eq("mes", mes).order("dia", desc=True).execute()
+        # 2. Buscar Desocupações com Joins (Usando ID para ordem pois não existe coluna DIA)
+        res = supabase.table("desocupacoes").select("*, bairros(nome)").eq("ano", ano).eq("mes", mes).order("id", desc=True).execute()
         desoc_raw = res.data if res else []
         
         desocupacoes = []
         for d in desoc_raw:
             desocupacoes.append({
                 **d,
+                "codigo_imovel": d.get("codigo_sistema", "N/A"),
                 "bairro_nome": d.get("bairros", {}).get("nome", "N/A") if d.get("bairros") else "N/A",
-                "motivo": d.get("motivo_desocupacao", "Não informado")
+                "motivo": d.get("motivo", "Não informado")
             })
 
         return templates.TemplateResponse(
