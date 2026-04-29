@@ -74,8 +74,8 @@
                         <td>{{ c.locatario }}</td>
                         <td>{{ c.bairro_nome }}</td>
                         <td>R$ {{ "{:,.2f}".format(c.valor_aluguel) }}</td>
-                        <td>{{ (c.taxa_adm_percent * 100)|round(1) }}%</td>
-                        <td class="text-info"><strong>R$ {{ "{:,.2f}".format(c.valor_aluguel * c.taxa_adm_percent) }}</strong></td>
+                        <td>{{ (c.taxa_adm_percent|default(0.1) * 100)|round(1) }}%</td>
+                        <td class="text-info"><strong>R$ {{ "{:,.2f}".format(c.valor_aluguel * c.taxa_adm_percent|default(0.1)) }}</strong></td>
                         <td>{{ c.corretor_nome }}</td>
                         <td><span class="badge">{{ c.garantia }}</span></td>
                     </tr>
